@@ -1,24 +1,25 @@
 using System;
+using System.Collections.Generic;
+using static System.Console;
+using static System.Math;
 class main{
-	static Func<double,vector,vector> F = delegate(double x, double y){		
-		return new vector(y[1],y[0]*(1-y[0]));
+	static Func<double,vector,vector> F = delegate(double x, vector y){		
+		return new vector(y[0]-y[0]*y[0],0);
 	};
+	static Func<double,double> logistic = delegate(double x){return 1/(1 + Exp(-x));};
 	public static int Main(){
 		double a = 0;
 		double b = 3;
-		vector ya = new vector(0, 0.5);
-	
-		vector y = ode.rk23(F, a, ya, b);
-		Error.WriteLine($"y0    ={y[0]}    y1\t={y[1]}");
-		Error.WriteLine($"sin(b)={Sin(b)} cos(b)\t={Cos(b)}");
-		if(approx(y[0],Sin(b),acc,eps) && approx(y[1],Cos(b),acc,eps))
-			Error.WriteLine("test passed");
-		else
-			Error.WriteLine("test failed");
-			Error.WriteLine($"npoints={xs.Count}");
+		vector ya = new vector(0.5, 0.25);
 
-		for(int i=0;i<xs.Count;i++)
-			WriteLine($"{xs[i]} {ys[i][0]} {ys[i][1]}");
+		var xs = new List<double>();
+		var ys = new List<vector>();		
+	
+		vector y = ode.rk23(F, a, ya, b, xlist:xs, ylist:ys);
+		for(int i=0;i<xs.Count;i++){
+			WriteLine($"{xs[i]} {ys[i][0]} {logistic(xs[i])}");
+		}
+		return 0;
 	}
 }
 //public static vector rk23 // calls driver with rkstep23 stepper
